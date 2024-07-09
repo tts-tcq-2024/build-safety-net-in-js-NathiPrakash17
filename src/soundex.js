@@ -25,24 +25,34 @@ function soundexName(name) {
     if (!name) return '';
     return characterRemoval(name.toUpperCase());
 }
+
+function fillWithZeros(array, length) {
+    while (array.length < length) {
+        array.push('0');
+    }
+}
+
+function getPreviousSoundexCode(soundexNames, currentIndex) {
+    if (currentIndex <= 0) {
+        return '';
+    }
+    return getSoundexCode(soundexNames[currentIndex - 1]);
+}
+
 function generateSoundex(name) {
     if (!name) return '';
 
     let soundexNames = soundexName(name);
-    let soundex = [soundexNames[0]];
-    let prevCode = getSoundexCode(soundexNames[0]);
+    let soundex = [];
 
-    for (let i = 1; i < soundexNames.length && soundex.length < 4; i++) {
-        let code = getSoundexCode(soundexNames[i]);
-        if (code !== '0' && code !== prevCode) {
+    soundexNames.slice(0, 4).forEach((name, index) => {
+        let code = getSoundexCode(name);
+        if (code !== '0' && (index === 0 || code !== getPreviousSoundexCode(soundexNames, index))) {
             soundex.push(code);
         }
-        prevCode = code;
-    }
+    });
 
-    while (soundex.length < 4) {
-        soundex.push('0');
-    }
+    fillWithZeros(soundex, 4);
 
     return soundex.join('');
 }
