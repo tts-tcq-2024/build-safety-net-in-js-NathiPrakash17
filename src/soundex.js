@@ -11,14 +11,29 @@ function getSoundexCode(char) {
     return soundexDict[char] || '0';
 }
 
+function soundexName(name) {
+    if (!name) return '';
+
+    const isVowelOrIgnored = (char) => {
+        const vowelsAndIgnored = ['A', 'E', 'I', 'O', 'U', 'H', 'W', 'Y'];
+        return vowelsAndIgnored.includes(char);
+    };
+
+    const upperCaseName = name.toUpperCase();
+    const newName = upperCaseName.split('').filter(char => !isVowelOrIgnored(char));
+
+    return newName.join('');
+}
+
 function generateSoundex(name) {
     if (!name) return '';
 
-    let soundex = [name[0].toUpperCase()];
-    let prevCode = getSoundexCode(name[0]);
+    let soundexNames = soundexName(name);
+    let soundex = [soundexNames[0]];
+    let prevCode = getSoundexCode(soundexNames[0]);
 
-    for (let i = 1; i < name.length && soundex.length < 4; i++) {
-        let code = getSoundexCode(name[i]);
+    for (let i = 1; i < soundexNames.length && soundex.length < 4; i++) {
+        let code = getSoundexCode(soundexNames[i]);
         if (code !== '0' && code !== prevCode) {
             soundex.push(code);
         }
