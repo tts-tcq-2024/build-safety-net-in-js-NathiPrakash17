@@ -11,6 +11,11 @@ function getSoundexCode(char) {
     return soundexDict[char] || '0';
 }
 
+function isVowelOrIgnored(char) {
+    const vowelsAndIgnored = new Set(['A', 'E', 'I', 'O', 'U', 'Y', 'H', 'W']);
+    return vowelsAndIgnored.has(char);
+}
+
 function characterRemoval(name) {
     const filteredCharacters = name.split('').filter(char => !isVowelOrIgnored(char));
     return filteredCharacters.join('');
