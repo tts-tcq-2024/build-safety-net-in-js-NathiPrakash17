@@ -37,13 +37,15 @@ function generateSoundex(name) {
     const soundex = [getSoundexCode(soundexNames[0])];
     let lastDigit = soundex[0];
 
-    soundexNames.slice(1).forEach(char => {
+    for (let i = 1; i < soundexNames.length; i++) {
+        const char = soundexNames[i];
         const code = getSoundexCode(char);
+        
         if (code !== '0' && code !== lastDigit) {
             soundex.push(code);
             lastDigit = code;
         }
-    });
+    }
 
     fillWithZeros(soundex, 4);
 
