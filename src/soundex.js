@@ -31,12 +31,11 @@ function generateSoundex(name) {
     if (!name || typeof name !== 'string' || name.length === 0) return '';
 
     const soundexNames = characterRemoval(name.toUpperCase()).slice(0, 4);
-    const soundex = [];
 
     if (soundexNames.length === 0) return '';
 
-    soundex.push(soundexNames[0]);
-    let lastDigit = getSoundexCode(soundexNames[0]);
+    const soundex = [getSoundexCode(soundexNames[0])];
+    let lastDigit = soundex[0];
 
     soundexNames.slice(1).forEach(char => {
         const code = getSoundexCode(char);
@@ -50,6 +49,7 @@ function generateSoundex(name) {
 
     return soundex.join('');
 }
+
 
 module.exports = {
     getSoundexCode,
