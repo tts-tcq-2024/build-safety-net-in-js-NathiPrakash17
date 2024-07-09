@@ -32,23 +32,18 @@ function fillWithZeros(array, length) {
     }
 }
 
-function getPreviousSoundexCode(soundexNames, currentIndex) {
-    if (currentIndex <= 0) {
-        return '';
-    }
-    return getSoundexCode(soundexNames[currentIndex - 1]);
-}
-
 function generateSoundex(name) {
     if (!name) return '';
 
     let soundexNames = soundexName(name);
     let soundex = [];
+    let seenCodes = new Set();
 
     soundexNames.slice(0, 4).forEach((name, index) => {
         let code = getSoundexCode(name);
-        if (code !== '0' && (index === 0 || code !== getPreviousSoundexCode(soundexNames, index))) {
+        if (code !== '0' && !seenCodes.has(code)) {
             soundex.push(code);
+            seenCodes.add(code);
         }
     });
 
