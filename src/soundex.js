@@ -33,18 +33,14 @@ function generateSoundex(name) {
     const soundexNames = characterRemoval(name.toUpperCase()).slice(0, 4);
     const soundex = [];
 
-    let lastDigit = '';
-    soundexNames.forEach((char, index) => {
-        // Include the first character
-        if (index === 0) {
-            soundex.push(char);
-            lastDigit = getSoundexCode(char);
-        } else {
-            const code = getSoundexCode(char);
-            if (code !== '0' && code !== lastDigit) {
-                soundex.push(code);
-                lastDigit = code;
-            }
+    soundex.push(soundexNames[0]);
+    let lastDigit = getSoundexCode(soundexNames[0]);
+
+    soundexNames.slice(1).forEach(char => {
+        const code = getSoundexCode(char);
+        if (code !== '0' && code !== lastDigit) {
+            soundex.push(code);
+            lastDigit = code;
         }
     });
 
@@ -52,6 +48,7 @@ function generateSoundex(name) {
 
     return soundex.join('');
 }
+
 
 module.exports = {
     getSoundexCode,
