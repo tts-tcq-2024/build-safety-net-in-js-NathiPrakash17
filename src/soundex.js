@@ -11,20 +11,15 @@ function getSoundexCode(char) {
     return soundexDict[char] || '0';
 }
 
-function soundexName(name) {
-    if (!name) return '';
-
-    const isVowelOrIgnored = (char) => {
-        const vowelsAndIgnored = ['A', 'E', 'I', 'O', 'U', 'H', 'W', 'Y'];
-        return vowelsAndIgnored.includes(char);
-    };
-
-    const upperCaseName = name.toUpperCase();
-    const newName = upperCaseName.split('').filter(char => !isVowelOrIgnored(char));
-
-    return newName.join('');
+function characterRemoval(name) {
+    const filteredCharacters = name.split('').filter(char => !isVowelOrIgnored(char));
+    return filteredCharacters.join('');
 }
 
+function soundexName(name) {
+    if (!name) return '';
+    return characterRemoval(name.toUpperCase());
+}
 function generateSoundex(name) {
     if (!name) return '';
 
