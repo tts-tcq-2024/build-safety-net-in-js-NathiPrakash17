@@ -21,11 +21,6 @@ function characterRemoval(name) {
     return filteredCharacters.join('');
 }
 
-function soundexName(name) {
-    if (!name) return '';
-    return characterRemoval(name.toUpperCase());
-}
-
 function fillWithZeros(array, length) {
     while (array.length < length) {
         array.push('0');
@@ -35,15 +30,21 @@ function fillWithZeros(array, length) {
 function generateSoundex(name) {
     if (!name) return '';
 
-    let soundexNames = soundexName(name);
-    let soundex = [];
-    let seenCodes = new Set();
+    const soundexNames = characterRemoval(name.toUpperCase()).slice(0, 4);
+    const soundex = [];
 
-    soundexNames.slice(0, 4).forEach((name, index) => {
-        let code = getSoundexCode(name);
-        if (code !== '0' && !seenCodes.has(code)) {
-            soundex.push(code);
-            seenCodes.add(code);
+    let lastDigit = '';
+    soundexNames.forEach((char, index) => {
+        // Include the first character
+        if (index === 0) {
+            soundex.push(char);
+            lastDigit = getSoundexCode(char);
+        } else {
+            const code = getSoundexCode(char);
+            if (code !== '0' && code !== lastDigit) {
+                soundex.push(code);
+                lastDigit = code;
+            }
         }
     });
 
@@ -56,4 +57,3 @@ module.exports = {
     getSoundexCode,
     generateSoundex
 };
-
