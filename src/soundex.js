@@ -17,41 +17,37 @@ function isVowelOrIgnored(char) {
 }
 
 function characterRemoval(name) {
-    const filteredCharacters = name.split('').filter(char => !isVowelOrIgnored(char));
-    return filteredCharacters.join('');
+    return name.split('').filter(char => !isVowelOrIgnored(char)).join('');
 }
 
 function fillWithZeros(array, length) {
-    while (array.length < length) {
-        array.push('0');
-    }
+    return array.concat(Array(length - array.length).fill('0'));
 }
 
 function generateSoundex(name) {
     if (!name || typeof name !== 'string' || name.length === 0) return '';
 
-    const soundexNames = characterRemoval(name.toUpperCase()).slice(0, 4);
+    const upperName = name.toUpperCase();
+    const firstLetter = upperName.charAt(0);
+    const soundexNames = characterRemoval(upperName).slice(0, 4);
 
     if (soundexNames.length === 0) return '';
 
-    const soundex = [getSoundexCode(soundexNames[0])];
+    let soundex = [getSoundexCode(firstLetter)];
     let lastDigit = soundex[0];
 
-    for (let i = 1; i < soundexNames.length; i++) {
-        const char = soundexNames[i];
+    soundexNames.split('').forEach(char => {
         const code = getSoundexCode(char);
-        
         if (code !== '0' && code !== lastDigit) {
             soundex.push(code);
             lastDigit = code;
         }
-    }
+    });
 
-    fillWithZeros(soundex, 4);
+    soundex = fillWithZeros(soundex, 4);
 
     return soundex.join('');
 }
-
 
 module.exports = {
     getSoundexCode,
