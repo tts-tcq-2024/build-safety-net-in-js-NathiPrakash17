@@ -21,34 +21,54 @@ function characterRemoval(name) {
 }
 
 function fillWithZeros(array, length) {
-    return array.concat(Array(length - array.length).fill('0'));
+    while (array.length < length) {
+        array.push('0');
+    }
+    return array;
+}
+
+
+function isValidInput(name) {
+  return typeof name === 'string' && name.length > 0;
+}
+
+function prepareInput(name) {
+  const upperName = name.toUpperCase();
+  return characterRemoval(upperName);
+}
+
+function createSoundexCore(preparedName) {
+  const firstLetterCode = getSoundexCode(preparedName[0]);
+  const soundexCodes = preparedName.slice(1).map(char => getSoundexCode(char));
+
+  const soundexCore = [firstLetterCode];
+  let lastDigit = firstLetterCode;
+
+  soundexCodes.forEach(code => {
+    if (code !== '0' && code !== lastDigit) {
+      soundexCore.push(code);
+      lastDigit = code;
+    }
+  });
+
+  return soundexCore;
+}
+
+function formatSoundex(soundexCore) {
+  return fillWithZeros(soundexCore, 4).join('');
 }
 
 function generateSoundex(name) {
-    if (!name || typeof name !== 'string' || name.length === 0) return '';
+  if (!isValidInput(name)) {
+    return '';
+  }
 
-    const upperName = name.toUpperCase();
-    const firstLetter = upperName.charAt(0);
-    const soundexNames = characterRemoval(upperName).slice(0, 4);
+  const preparedName = prepareInput(name);
+  const soundexCore = createSoundexCore(preparedName);
+  const formattedSoundex = formatSoundex(soundexCore);
 
-    if (soundexNames.length === 0) return '';
-
-    let soundex = [getSoundexCode(firstLetter)];
-    let lastDigit = soundex[0];
-
-    soundexNames.split('').forEach(char => {
-        const code = getSoundexCode(char);
-        if (code !== '0' && code !== lastDigit) {
-            soundex.push(code);
-            lastDigit = code;
-        }
-    });
-
-    soundex = fillWithZeros(soundex, 4);
-
-    return soundex.join('');
+  return formattedSoundex;
 }
-
 module.exports = {
     getSoundexCode,
     generateSoundex
