@@ -10,5 +10,9 @@ describe('Soundex Algorithm', () => {
         expect(generateSoundex("A")).to.equal("A000");
     });
 
+     it('should test Soundex', () => {
+       expect(generateSoundex("Arjuna")).to.equal("A625");
+    });
+    
     
 });

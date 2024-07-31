@@ -1,5 +1,4 @@
 function getSoundexCode(char) {
-    char = char.toUpperCase();
     const soundexDict = {
         'B': '1', 'F': '1', 'P': '1', 'V': '1',
         'C': '2', 'G': '2', 'J': '2', 'K': '2', 'Q': '2', 'S': '2', 'X': '2', 'Z': '2',
@@ -11,29 +10,47 @@ function getSoundexCode(char) {
     return soundexDict[char] || '0';
 }
 
-function generateSoundex(name) {
-    if (!name) return '';
+function isVowelOrIgnored(char) {
+    const ignoredChars = new Set('AEIOUYHW');
+    return ignoredChars.has(char);
+}
 
-    let soundex = [name[0].toUpperCase()];
-    let prevCode = getSoundexCode(name[0]);
+function getNewDigit(char) {
+  if (isVowelOrIgnored(char)) {
+    return null;
+  }
+  return getSoundexCode(char);
+}
 
-    for (let i = 1; i < name.length && soundex.length < 4; i++) {
-        let code = getSoundexCode(name[i]);
-        if (code !== '0' && code !== prevCode) {
-            soundex.push(code);
-        }
-        prevCode = code;
+function updateSoundex(lastDigit, soundexCode, currentDigit) {
+  if (currentDigit !== lastDigit && currentDigit !== '0') {
+    soundexCode += currentDigit;
+    lastDigit = currentDigit;
+  }
+  return [lastDigit, soundexCode];
+}
+
+function processChar(char, lastDigit, soundexCode) {
+  const currentDigit = getNewDigit(char);
+  if (currentDigit === null) {
+    return [lastDigit, soundexCode];
+  }
+  return updateSoundex(lastDigit, soundexCode, currentDigit);
+}
+function generateSoundex(word) {
+    if (!word) return '';
+    word = word.toUpperCase();
+    let soundexCode = word[0]; 
+    let lastDigit = getSoundexCode(word[0]);
+
+    for (let i = 1; i < word.length; i++) {
+        [lastDigit, soundexCode] = processChar(word[i], lastDigit, soundexCode);
     }
 
-    while (soundex.length < 4) {
-        soundex.push('0');
-    }
-
-    return soundex.join('');
+    return (soundexCode + '0000').slice(0, 4);
 }
 
 module.exports = {
     getSoundexCode,
     generateSoundex
 };
-
