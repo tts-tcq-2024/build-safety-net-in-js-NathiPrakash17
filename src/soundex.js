@@ -16,14 +16,16 @@ function isVowelOrIgnored(char) {
 }
 
 function processChar(char, lastDigit, soundexCode) {
-    if (isVowelOrIgnored(char)) return [lastDigit, soundexCode]; 
-    const currentDigit = getSoundexCode(char);
-    if (currentDigit !== lastDigit && currentDigit !== '0') {
-        soundexCode += currentDigit;
-        lastDigit = currentDigit;
+    if (isVowelOrIgnored(char)) {
+        return [lastDigit, soundexCode];
     }
-    return [lastDigit, soundexCode];
+    const currentDigit = getSoundexCode(char);
+    if (currentDigit === '0' || currentDigit === lastDigit) {
+        return [lastDigit, soundexCode];
+    }
+    return [currentDigit, soundexCode + currentDigit];
 }
+
 
 function generateSoundex(word) {
     if (!word) return '';
