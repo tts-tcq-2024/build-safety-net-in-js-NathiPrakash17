@@ -15,18 +15,28 @@ function isVowelOrIgnored(char) {
     return ignoredChars.has(char);
 }
 
-function processChar(char, lastDigit, soundexCode) {
-    if (isVowelOrIgnored(char)) {
-        return [lastDigit, soundexCode];
-    }
-    const currentDigit = getSoundexCode(char);
-    if (currentDigit === '0' || currentDigit === lastDigit) {
-        return [lastDigit, soundexCode];
-    }
-    return [currentDigit, soundexCode + currentDigit];
+function getNewDigit(char) {
+  if (isVowelOrIgnored(char)) {
+    return null;
+  }
+  return getSoundexCode(char);
 }
 
+function updateSoundex(lastDigit, soundexCode, currentDigit) {
+  if (currentDigit !== lastDigit && currentDigit !== '0') {
+    soundexCode += currentDigit;
+    lastDigit = currentDigit;
+  }
+  return [lastDigit, soundexCode];
+}
 
+function processChar(char, lastDigit, soundexCode) {
+  const currentDigit = getNewDigit(char);
+  if (currentDigit === null) {
+    return [lastDigit, soundexCode];
+  }
+  return updateSoundex(lastDigit, soundexCode, currentDigit);
+}
 function generateSoundex(word) {
     if (!word) return '';
     word = word.toUpperCase();
